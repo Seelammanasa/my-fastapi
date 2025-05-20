@@ -47,10 +47,10 @@ def generate_user_id():
     return str(uuid.uuid4())
 def verify_password(plain_password,hashed_password):
     return pwd_context.verify(plain_password,hashed_password)
-def authenticate_user(db:Session, username:str,password:str):
-    print(username)
+def authenticate_user(db:Session, email:str,password:str):
+    print(email)
     print(password)
-    user=curd.get_user_by_email(db,email=username)
+    user=curd.get_user_by_email(db,email=email)
     print(user)
     if not user or not verify_password(password,user.hashed_password):
         return False
@@ -88,8 +88,8 @@ async def register_user(
     }
 
 @app.post("/login_user")
-async def login_for_access_token(form_data:OAuth2PasswordRequestForm= Depends(),db:Session=Depends(get_db)):
-    user=authenticate_user(db,form_data.username,form_data.password)
+async def login_for_access_token(data: schemas.LoginRequest,db:Session=Depends(get_db)):
+    user=authenticate_user(db, data.email, data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     access_token_expire=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

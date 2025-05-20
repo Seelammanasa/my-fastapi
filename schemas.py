@@ -20,6 +20,9 @@ class UserOut(BaseModel):
     email:str
     class Config:
         orm_mode=True
+class LoginRequest(BaseModel):
+    email: str
+    password: str
 class SalaryTipsResultModel(BaseModel):
     salaryTipsId: str
     tips: str
